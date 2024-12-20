@@ -1,0 +1,95 @@
+'use client'
+
+import React, { useState, useEffect } from "react";
+import Head from "next/head";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+const images = [
+  { src: "/web1.svg", link: "https://example.com/page2" },
+  { src: "/web2.svg", link: "https://example.com/page3" },
+  { src: "/web3.svg", link: "https://example.com/page1" },
+  { src: "/web4.svg", link: "https://example.com/page2" },
+  { src: "/web5.svg", link: "https://example.com/page3" },
+
+];
+
+const Carouselc: React.FC = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handlePrevious = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    };
+  
+    const handleNext = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    };
+  
+    useEffect(() => {
+      const interval = setInterval(() => {
+        handleNext();
+      }, 5000);
+      return () => clearInterval(interval);
+    }, []);
+  
+    return (
+      <div className="relative w-full max-w-screen-lg mx-auto mt-8 px-4 md:px-0">
+        <Head>
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+          />
+          <title>Responsive Carousel</title>
+        </Head>
+        <div className="overflow-hidden rounded-lg shadow-lg aspect-w-16 aspect-h-9">
+          <a href={images[currentIndex].link} target="_blank" rel="noopener noreferrer">
+            <div
+              className="whitespace-nowrap transition-transform duration-700 ease-in-out transform"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.src}
+                  alt={`Carousel Image ${index + 1}`}
+                  className="inline-block w-full h-full object-contain"
+                />
+              ))}
+            </div>
+          </a>
+        </div>
+        <button
+          onClick={handlePrevious}
+          className="absolute top-1/2 left-2 sm:left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full focus:outline-none hover:bg-gray-700"
+        >
+          <FaChevronLeft size={20} />
+        </button>
+        <button
+          onClick={handleNext}
+          className="absolute top-1/2 right-2 sm:right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full focus:outline-none hover:bg-gray-700"
+        >
+          <FaChevronRight size={20} />
+        </button>
+        <div className="flex justify-center mt-4 space-x-2">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-3 h-3 rounded-full ${
+                index === currentIndex ? 'bg-blue-600' : 'bg-gray-400'
+              } focus:outline-none`}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+const CarouselPage: React.FC = () => {
+  return (
+    <div className="min-h-30 flex flex-col items-center bg-gray-50">
+      <Carouselc />
+    </div>
+  );
+};
+
+export default CarouselPage;
